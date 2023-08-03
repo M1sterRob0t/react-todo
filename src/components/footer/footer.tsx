@@ -1,12 +1,23 @@
+import { TTask } from "../../types/task";
 import TasksFilter from "../tasks-filter";
 import './footer.css';
+import { Filter } from "../../constants";
 
-const Footer = () => {
+interface IFooterProps {
+  filter: Filter;
+  tasks: TTask[];
+  onFilterChange: (filterName: Filter) => void;
+  onClearCompleted: () => void;
+}
+
+const Footer = ({tasks, filter, onFilterChange, onClearCompleted}:IFooterProps) => {
+  const uncompletedTasks = tasks.filter((el) => !el.isCompleted);
+  
   return (
     <footer className="footer">
-      <span className="todo-count">1 items left</span>
-      <TasksFilter />
-      <button className="clear-completed">Clear completed</button>
+      <span className="todo-count">{uncompletedTasks.length} items left</span>
+      <TasksFilter onFilterChange={onFilterChange} filter={filter}/>
+      <button className="clear-completed" onClick={onClearCompleted}>Clear completed</button>
     </footer>
   );
 };

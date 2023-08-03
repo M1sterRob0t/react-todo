@@ -16,6 +16,7 @@ class NewTaskForm extends Component<INewTaskFormProps, IStateProps> {
       value: "What needs to be done?",
     };
   }
+  
   changeValue(newValue: string) {
     this.setState({value: newValue});
   }

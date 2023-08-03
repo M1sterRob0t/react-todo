@@ -4,52 +4,104 @@ import Footer from "../footer";
 import TasksList from "../tasks-list";
 import "./app.css";
 import { TTask } from "../../types/task";
+import { Filter } from "../../constants";
 
 interface IAppProps {
   tasks: TTask[];
 }
 
-interface IStateProps {
+interface IAppStateProps {
   tasks: TTask[];
+  filter: Filter;
 }
 
-class App extends Component<IAppProps, IStateProps> {
-  constructor(props: IAppProps) {
+class App extends Component<IAppProps, IAppStateProps> {
+  constructor(props: IAppStateProps) {
     super(props);
     this.state = {
       tasks: this.props.tasks,
+      filter: Filter.All,
     };
-    
+
     this.deleteTask = this.deleteTask.bind(this);
     this.addTask = this.addTask.bind(this);
+    this.toggleTaskStatus = this.toggleTaskStatus.bind(this);
+    this.changeFilter = this.changeFilter.bind(this);
+    this.remveCompletedTasks = this.remveCompletedTasks.bind(this);
   }
   minID = 100;
 
+  toggleTaskStatus(id: number) {
+    const taskIndex = this.state.tasks.findIndex((el) => el.id === id);
+    const task = this.state.tasks[taskIndex];
+    if (!task) throw new Error();
+
+    this.setState(({ tasks }) => {
+      const newTask = { ...task, isCompleted: !task.isCompleted };
+      return {
+        tasks: [...tasks.slice(0, taskIndex), newTask, ...tasks.slice(taskIndex + 1)],
+      };
+    });
+
+    setTimeout(() => console.log(this.state.tasks), 1000);
+  }
+
   deleteTask(id: number) {
-    this.setState(({tasks}) => {
+    this.setState(({ tasks }) => {
       return {
         tasks: tasks.filter((el) => el.id !== id), // [...tasks.slice(0, index), ...tasks.slice(index + 1)]
-      }
+      };
     });
   }
 
   addTask(text: string) {
-    console.log(text);
-    console.log(this.state.tasks);
-    this.setState(({tasks}) => {
+    this.setState(({ tasks }) => {
       return {
-        tasks: [...tasks, {id: this.minID++, text}]
-      }
+        tasks: [...tasks, { id: this.minID++, text, isCompleted: false }],
+      };
     });
   }
 
+  changeFilter(filterName: Filter) {
+    console.log(filterName);
+    this.setState(() => ({ filter: filterName }));
+    setTimeout(() => console.log(filterName), 500);
+  }
+
+  remveCompletedTasks() {
+    this.setState(({ tasks }) => {
+      return {
+        tasks: tasks.filter((el) => !el.isCompleted),
+      };
+    });
+  }
+
+  getFilteredTasks() {
+    switch (this.state.filter) {
+      case Filter.All:
+        return this.state.tasks;
+      case Filter.Active:
+        return this.state.tasks.filter((task) => !task.isCompleted);
+      case Filter.Completed:
+        return this.state.tasks.filter((task) => task.isCompleted);
+      default:
+        return this.state.tasks;
+    }
+  }
+
   render() {
+    const filteredTasks = this.getFilteredTasks();
     return (
       <React.StrictMode>
-        <Header onTaskAdd={this.addTask}/>
+        <Header onTaskAdd={this.addTask} />
         <section className="main">
-          <TasksList tasks={this.state.tasks} onTaskDelete={this.deleteTask} />
-          <Footer />
+          <TasksList tasks={filteredTasks} onTaskDelete={this.deleteTask} onTaskStatusToggle={this.toggleTaskStatus} />
+          <Footer
+            tasks={this.state.tasks}
+            onFilterChange={this.changeFilter}
+            filter={this.state.filter}
+            onClearCompleted={this.remveCompletedTasks}
+          />
         </section>
       </React.StrictMode>
     );

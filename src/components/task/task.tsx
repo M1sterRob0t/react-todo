@@ -8,13 +8,13 @@ const ClassName = {
 }
 
 interface IStateProps {
-  isCompleted: boolean,
   isEditing: boolean,
 }
 
 interface ITaskProps {
   task: TTask;
   onDelete: (id: number) => void;
+  onToggle: (id: number) => void;
 }
 
 class Task extends Component<ITaskProps, IStateProps> {
@@ -22,14 +22,14 @@ class Task extends Component<ITaskProps, IStateProps> {
     super(props);
     this.state = {
       isEditing: false,
-      isCompleted: false,
     };
-    this.taskClickHandler = this.taskClickHandler.bind(this);
+
+    this.taskStatusChangeHandler = this.taskStatusChangeHandler.bind(this);
     this.editButtonClickHandler = this.editButtonClickHandler.bind(this);
   }
 
-  taskClickHandler() {
-    this.setState((state) => ({isCompleted: !state.isCompleted}));
+  taskStatusChangeHandler() {
+    this.props.onToggle(this.props.task.id);
   }
 
   editButtonClickHandler() {
@@ -37,14 +37,14 @@ class Task extends Component<ITaskProps, IStateProps> {
   }
 
   render() {
-    const {text, id} = this.props.task;
-    const isCompleted = this.state.isCompleted ? ClassName.COMPLETED : "";
-    const isEditing = this.state.isEditing ? ClassName.EDITING : "";
+    const {text, id, isCompleted} = this.props.task;
+    const completedClassName = isCompleted ? ClassName.COMPLETED : "";
+    const editingClassName = this.state.isEditing ? ClassName.EDITING : "";
     return (
-      <li className={`${isCompleted} ${isEditing}`}>
+      <li className={`${completedClassName} ${editingClassName}`}>
         <div className="view">
-          <input className="toggle" type="checkbox"/>
-          <label onClick={this.taskClickHandler}>
+          <input className="toggle" id={`toggle-${id}`} type="checkbox" defaultChecked={isCompleted} onChange={this.taskStatusChangeHandler}/>
+          <label htmlFor={`toggle-${id}`}>
             <span className="description">{text}</span>
             <span className="created">created 17 seconds ago</span>
           </label>
