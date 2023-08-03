@@ -1,11 +1,15 @@
 import NewTaskForm from "../new-task-form";
 import './header.css';
 
-const Header = (): JSX.Element => {
+interface IHeaderProps {
+  onTaskAdd: (text: string) => void;
+}
+
+const Header = ({onTaskAdd}: IHeaderProps): JSX.Element => {
   return (
     <header className="header">
       <h1 className="header__title">todos</h1>
-      <NewTaskForm />
+      <NewTaskForm onTaskAdd={onTaskAdd}/>
     </header>
   );
 };

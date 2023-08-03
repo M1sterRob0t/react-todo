@@ -1,14 +1,16 @@
 import Task from "../task";
 import './task-list.css';
+import { TTask } from "../../types/task";
 
 interface ITasksListProps {
-  data: string[];
+  tasks: TTask[];
+  onTaskDelete: (id: number) => void;
 }
 
-const TasksList = ({data}: ITasksListProps):JSX.Element => {
+const TasksList = ({tasks, onTaskDelete}: ITasksListProps):JSX.Element => {
   return (
     <ul className="todo-list">
-      {data.map((data) => <Task text={data}/>)}
+      {tasks.map((task) => <Task task={task} key={task.id} onDelete={onTaskDelete}/>)}
     </ul>
   );
 }
