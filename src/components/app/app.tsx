@@ -10,13 +10,13 @@ interface IAppProps {
   tasks: TTask[];
 }
 
-interface IAppStateProps {
+interface IAppState {
   tasks: TTask[];
   filter: Filter;
 }
 
-class App extends Component<IAppProps, IAppStateProps> {
-  constructor(props: IAppStateProps) {
+class App extends Component<IAppProps, IAppState> {
+  constructor(props: IAppState) {
     super(props);
     this.state = {
       tasks: this.props.tasks,
@@ -57,7 +57,7 @@ class App extends Component<IAppProps, IAppStateProps> {
   addTask(text: string) {
     this.setState(({ tasks }) => {
       return {
-        tasks: [...tasks, { id: this.minID++, text, isCompleted: false }],
+        tasks: [...tasks, { id: this.minID++, isCompleted: false, created: new Date(), text }],
       };
     });
   }

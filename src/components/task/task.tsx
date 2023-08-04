@@ -1,13 +1,14 @@
 import {Component} from'react';
 import './task.css';
 import { TTask } from '../../types/task';
+import {formatDistanceToNow} from 'date-fns';
 
 const ClassName = {
   COMPLETED: `completed`,
   EDITING: `editing`,
 }
 
-interface IStateProps {
+interface ITaskState {
   isEditing: boolean,
 }
 
@@ -17,7 +18,7 @@ interface ITaskProps {
   onToggle: (id: number) => void;
 }
 
-class Task extends Component<ITaskProps, IStateProps> {
+class Task extends Component<ITaskProps, ITaskState> {
   constructor(props: ITaskProps) {
     super(props);
     this.state = {
@@ -37,7 +38,7 @@ class Task extends Component<ITaskProps, IStateProps> {
   }
 
   render() {
-    const {text, id, isCompleted} = this.props.task;
+    const {text, id, isCompleted, created} = this.props.task;
     const completedClassName = isCompleted ? ClassName.COMPLETED : "";
     const editingClassName = this.state.isEditing ? ClassName.EDITING : "";
     return (
@@ -46,7 +47,7 @@ class Task extends Component<ITaskProps, IStateProps> {
           <input className="toggle" id={`toggle-${id}`} type="checkbox" defaultChecked={isCompleted} onChange={this.taskStatusChangeHandler}/>
           <label htmlFor={`toggle-${id}`}>
             <span className="description">{text}</span>
-            <span className="created">created 17 seconds ago</span>
+            <span className="created">created {formatDistanceToNow(created)} ago</span>
           </label>
           <button className="icon icon-edit" onClick={this.editButtonClickHandler}></button>
           <button className="icon icon-destroy" onClick={() => this.props.onDelete(id)}></button>

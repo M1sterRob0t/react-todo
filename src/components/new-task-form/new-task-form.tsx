@@ -5,11 +5,11 @@ interface INewTaskFormProps {
   onTaskAdd: (text: string) => void;
 }
 
-interface IStateProps {
+interface INewTaskFormState {
   value: string;
 }
 
-class NewTaskForm extends Component<INewTaskFormProps, IStateProps> {
+class NewTaskForm extends Component<INewTaskFormProps, INewTaskFormState> {
   constructor(props: INewTaskFormProps) {
     super(props);
     this.state = {
