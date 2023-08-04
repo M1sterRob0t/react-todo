@@ -57,7 +57,7 @@ class App extends Component<IAppProps, IAppState> {
   addTask(text: string) {
     this.setState(({ tasks }) => {
       return {
-        tasks: [...tasks, { id: this.minID++, isCompleted: false, created: new Date(), text }],
+        tasks: [{ id: this.minID++, isCompleted: false, created: new Date(), text }, ...tasks],
       };
     });
   }
