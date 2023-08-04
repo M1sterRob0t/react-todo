@@ -1,10 +1,11 @@
-import React, { Component } from "react";
-import Header from "../header";
-import Footer from "../footer";
-import TasksList from "../tasks-list";
-import "./app.css";
-import { TTask } from "../../types/task";
-import { Filter } from "../../constants";
+import React, { Component } from 'react';
+
+import Header from '../header';
+import Footer from '../footer';
+import TasksList from '../tasks-list';
+import './app.css';
+import { TTask } from '../../types/task';
+import { Filter } from '../../constants';
 
 interface IAppProps {
   tasks: TTask[];
@@ -28,6 +29,7 @@ class App extends Component<IAppProps, IAppState> {
     this.toggleTaskStatus = this.toggleTaskStatus.bind(this);
     this.changeFilter = this.changeFilter.bind(this);
     this.remveCompletedTasks = this.remveCompletedTasks.bind(this);
+    this.changeTaskText = this.changeTaskText.bind(this);
   }
   minID = 100;
 
@@ -42,8 +44,6 @@ class App extends Component<IAppProps, IAppState> {
         tasks: [...tasks.slice(0, taskIndex), newTask, ...tasks.slice(taskIndex + 1)],
       };
     });
-
-    setTimeout(() => console.log(this.state.tasks), 1000);
   }
 
   deleteTask(id: number) {
@@ -62,10 +62,21 @@ class App extends Component<IAppProps, IAppState> {
     });
   }
 
+  changeTaskText(id: number, newText: string) {
+    const taskIndex = this.state.tasks.findIndex((el) => el.id === id);
+    const task = this.state.tasks[taskIndex];
+    if (!task) throw new Error();
+
+    this.setState(({ tasks }) => {
+      const newTask = { ...task, text: newText };
+      return {
+        tasks: [...tasks.slice(0, taskIndex), newTask, ...tasks.slice(taskIndex + 1)],
+      };
+    });
+  }
+
   changeFilter(filterName: Filter) {
-    console.log(filterName);
     this.setState(() => ({ filter: filterName }));
-    setTimeout(() => console.log(filterName), 500);
   }
 
   remveCompletedTasks() {
@@ -95,7 +106,12 @@ class App extends Component<IAppProps, IAppState> {
       <React.StrictMode>
         <Header onTaskAdd={this.addTask} />
         <section className="main">
-          <TasksList tasks={filteredTasks} onTaskDelete={this.deleteTask} onTaskStatusToggle={this.toggleTaskStatus} />
+          <TasksList
+            tasks={filteredTasks}
+            onTaskDelete={this.deleteTask}
+            onTaskStatusToggle={this.toggleTaskStatus}
+            onTaskStatusChange={this.changeTaskText}
+          />
           <Footer
             tasks={this.state.tasks}
             onFilterChange={this.changeFilter}

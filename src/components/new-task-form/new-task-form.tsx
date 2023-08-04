@@ -1,5 +1,5 @@
-import { Component } from "react";
-import "./new-task-form.css";
+import { Component } from 'react';
+import './new-task-form.css';
 
 interface INewTaskFormProps {
   onTaskAdd: (text: string) => void;
@@ -13,12 +13,12 @@ class NewTaskForm extends Component<INewTaskFormProps, INewTaskFormState> {
   constructor(props: INewTaskFormProps) {
     super(props);
     this.state = {
-      value: "What needs to be done?",
+      value: 'What needs to be done?',
     };
   }
-  
+
   changeValue(newValue: string) {
-    this.setState({value: newValue});
+    this.setState({ value: newValue });
   }
 
   render() {
@@ -28,9 +28,9 @@ class NewTaskForm extends Component<INewTaskFormProps, INewTaskFormState> {
         placeholder="What needs to be done?"
         autoFocus
         onKeyDown={(evt) => {
-          if(evt.key === `Enter`) {
+          if (evt.key === 'Enter') {
             this.props.onTaskAdd(this.state.value);
-            this.changeValue("");
+            this.changeValue('');
           }
         }}
         value={this.state.value}

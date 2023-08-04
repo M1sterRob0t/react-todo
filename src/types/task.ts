@@ -1,6 +1,6 @@
 export type TTask = {
-  id: number,
-  text: string,
+  id: number;
+  text: string;
   isCompleted: boolean;
   created: Date;
 };
