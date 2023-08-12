@@ -1,7 +1,7 @@
 import { Component, KeyboardEvent, ChangeEvent } from 'react';
-import './task.css';
 import { formatDistanceToNow } from 'date-fns';
 
+import Timer from '../timer';
 import { TTask } from '../../types/task';
 
 const ClassName = {
@@ -69,6 +69,7 @@ class Task extends Component<ITaskProps, ITaskState> {
     const { text, id, isCompleted, created } = this.props.task;
     const completedClassName = isCompleted ? ClassName.COMPLETED : '';
     const editingClassName = this.state.isEditing ? ClassName.EDITING : '';
+    const time = this.props.task.min * 60 * 1000 + this.props.task.sec * 1000;
 
     return (
       <li className={`${completedClassName} ${editingClassName}`}>
@@ -81,8 +82,9 @@ class Task extends Component<ITaskProps, ITaskState> {
             onChange={this.taskStatusChangeHandler}
           />
           <label htmlFor={`toggle-${id}`}>
-            <span className="description">{text}</span>
-            <span className="created">created {formatDistanceToNow(created)} ago</span>
+            <span className="title">{text}</span>
+            <Timer initialTime={time} />
+            <span className="description">created {formatDistanceToNow(created)} ago</span>
           </label>
           <button className="icon icon-edit" onClick={this.editButtonClickHandler}></button>
           <button className="icon icon-destroy" onClick={() => this.props.onDelete(id)}></button>

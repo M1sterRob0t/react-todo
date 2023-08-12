@@ -1,5 +1,4 @@
 import Task from '../task';
-import './task-list.css';
 import { TTask } from '../../types/task';
 
 interface ITasksListProps {

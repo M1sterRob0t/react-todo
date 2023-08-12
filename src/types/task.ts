@@ -3,4 +3,6 @@ export type TTask = {
   text: string;
   isCompleted: boolean;
   created: Date;
+  min: number;
+  sec: number;
 };

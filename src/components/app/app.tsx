@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import Header from '../header';
 import Footer from '../footer';
 import TasksList from '../tasks-list';
-import './app.css';
 import { TTask } from '../../types/task';
 import { Filter } from '../../constants';
 
@@ -54,10 +53,14 @@ class App extends Component<IAppProps, IAppState> {
     });
   }
 
-  addTask(text: string) {
+  addTask(text: string, min: number, sec: number) {
+    if (isNaN(min) || isNaN(sec)) {
+      min = 0;
+      sec = 0;
+    }
     this.setState(({ tasks }) => {
       return {
-        tasks: [{ id: this.minID++, isCompleted: false, created: new Date(), text }, ...tasks],
+        tasks: [{ id: this.minID++, isCompleted: false, created: new Date(), text, min, sec }, ...tasks],
       };
     });
   }

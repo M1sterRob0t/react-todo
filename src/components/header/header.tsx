@@ -1,8 +1,7 @@
 import NewTaskForm from '../new-task-form';
-import './header.css';
 
 interface IHeaderProps {
-  onTaskAdd: (text: string) => void;
+  onTaskAdd: (text: string, min: number, sec: number) => void;
 }
 
 const Header = ({ onTaskAdd }: IHeaderProps): JSX.Element => {

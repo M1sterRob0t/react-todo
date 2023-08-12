@@ -1,6 +1,5 @@
 import { Component, MouseEvent } from 'react';
 
-import './task-filter.css';
 import { Filter } from '../../constants';
 
 interface ITaskFilterProps {

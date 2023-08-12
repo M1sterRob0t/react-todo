@@ -1,43 +1,48 @@
-import { Component } from 'react';
-import './new-task-form.css';
+import { useState } from 'react';
 
 interface INewTaskFormProps {
-  onTaskAdd: (text: string) => void;
+  onTaskAdd: (text: string, min: number, sec: number) => void;
 }
 
-interface INewTaskFormState {
-  value: string;
-}
+function NewTaskForm({ onTaskAdd }: INewTaskFormProps) {
+  const [task, setTask] = useState('');
+  const [min, setMinutes] = useState<string>('');
+  const [sec, setSeconds] = useState<string>('');
 
-class NewTaskForm extends Component<INewTaskFormProps, INewTaskFormState> {
-  constructor(props: INewTaskFormProps) {
-    super(props);
-    this.state = {
-      value: 'What needs to be done?',
-    };
-  }
-
-  changeValue(newValue: string) {
-    this.setState({ value: newValue });
-  }
-
-  render() {
-    return (
+  return (
+    <form
+      className="new-todo-form"
+      onSubmit={(evt) => {
+        evt.preventDefault();
+        onTaskAdd(task, Number(min), Number(sec));
+        setTask('');
+        setMinutes('');
+        setSeconds('');
+      }}
+    >
       <input
         className="new-todo"
-        placeholder="What needs to be done?"
+        placeholder="Task"
         autoFocus
-        onKeyDown={(evt) => {
-          if (evt.key === 'Enter') {
-            this.props.onTaskAdd(this.state.value);
-            this.changeValue('');
-          }
-        }}
-        value={this.state.value}
-        onChange={(evt) => this.changeValue(evt.target.value)}
+        value={task}
+        onChange={(evt) => setTask(evt.target.value)}
+        required
       />
-    );
-  }
+      <input
+        className="new-todo-form__timer"
+        placeholder="Min"
+        value={min}
+        onChange={(evt) => setMinutes(evt.target.value)}
+      />
+      <input
+        className="new-todo-form__timer"
+        placeholder="Sec"
+        value={sec}
+        onChange={(evt) => setSeconds(evt.target.value)}
+      />
+      <button type="submit"></button>
+    </form>
+  );
 }
 
 export default NewTaskForm;

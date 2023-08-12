@@ -1,6 +1,5 @@
 import { TTask } from '../../types/task';
 import TasksFilter from '../tasks-filter';
-import './footer.css';
 import { Filter } from '../../constants';
 
 interface IFooterProps {
