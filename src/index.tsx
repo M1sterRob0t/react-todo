@@ -10,4 +10,4 @@ const importantTasks: TTask[] = [
   { id: 3, text: 'Hijack a car', isCompleted: true, created: new Date(2023, 6, 29, 19, 45), min: 0, sec: 0 },
 ];
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
-root.render(<App tasks={importantTasks} />);
+root.render(<App initialTasks={importantTasks} />);

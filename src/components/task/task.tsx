@@ -1,4 +1,4 @@
-import { Component, KeyboardEvent, ChangeEvent } from 'react';
+import { KeyboardEvent, ChangeEvent, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 
 import Timer from '../timer';
@@ -9,11 +9,6 @@ const ClassName = {
   EDITING: 'editing',
 };
 
-interface ITaskState {
-  isEditing: boolean;
-  text: string;
-}
-
 interface ITaskProps {
   task: TTask;
   onDelete: (id: number) => void;
@@ -21,84 +16,72 @@ interface ITaskProps {
   onTextChange: (id: number, newText: string) => void;
 }
 
-class Task extends Component<ITaskProps, ITaskState> {
-  constructor(props: ITaskProps) {
-    super(props);
-    this.state = {
-      isEditing: false,
-      text: this.props.task.text,
-    };
+function Task(props: ITaskProps): JSX.Element {
+  const { onToggle, onDelete, onTextChange, task } = props;
+  const [isEditing, setEditing] = useState(false);
+  const [text, setText] = useState(task.text);
 
-    this.taskStatusChangeHandler = this.taskStatusChangeHandler.bind(this);
-    this.editButtonClickHandler = this.editButtonClickHandler.bind(this);
-    this.escPressHandler = this.escPressHandler.bind(this);
-    this.inputEnterPressHandler = this.inputEnterPressHandler.bind(this);
-    this.taskTextChangeHandler = this.taskTextChangeHandler.bind(this);
+  function taskStatusChangeHandler() {
+    onToggle(task.id);
   }
 
-  taskStatusChangeHandler() {
-    this.props.onToggle(this.props.task.id);
+  function editButtonClickHandler() {
+    document.addEventListener('keydown', escPressHandler);
+    setEditing(true);
   }
 
-  editButtonClickHandler() {
-    document.addEventListener('keydown', this.escPressHandler);
-    this.setState(() => ({ isEditing: true }));
-  }
-
-  escPressHandler(evt: globalThis.KeyboardEvent) {
+  function escPressHandler(evt: globalThis.KeyboardEvent) {
     if (evt.key === 'Escape') {
-      this.setState(() => ({ isEditing: false }));
-      document.removeEventListener('keydown', this.escPressHandler);
+      setEditing(false);
+      document.removeEventListener('keydown', escPressHandler);
     }
   }
 
-  inputEnterPressHandler(evt: KeyboardEvent<HTMLInputElement>) {
+  function inputEnterPressHandler(evt: KeyboardEvent<HTMLInputElement>) {
     const input = evt.currentTarget as HTMLInputElement;
     if (evt.key === 'Enter') {
-      this.props.onTextChange(this.props.task.id, input.value);
-      this.setState(() => ({ isEditing: false }));
+      onTextChange(task.id, input.value);
+      setEditing(false);
     }
   }
 
-  taskTextChangeHandler(evt: ChangeEvent<HTMLInputElement>) {
+  function taskTextChangeHandler(evt: ChangeEvent<HTMLInputElement>) {
     const input = evt.currentTarget as HTMLInputElement;
-    this.setState(() => ({ text: input.value }));
+    setText(input.value);
   }
 
-  render() {
-    const { text, id, isCompleted, created } = this.props.task;
-    const completedClassName = isCompleted ? ClassName.COMPLETED : '';
-    const editingClassName = this.state.isEditing ? ClassName.EDITING : '';
-    const time = this.props.task.min * 60 * 1000 + this.props.task.sec * 1000;
+  const { id, isCompleted, created } = task;
+  const completedClassName = isCompleted ? ClassName.COMPLETED : '';
+  const editingClassName = isEditing ? ClassName.EDITING : '';
+  const time = task.min * 60 * 1000 + task.sec * 1000;
 
-    return (
-      <li className={`${completedClassName} ${editingClassName}`}>
-        <div className="view">
-          <input
-            className="toggle"
-            id={`toggle-${id}`}
-            type="checkbox"
-            defaultChecked={isCompleted}
-            onChange={this.taskStatusChangeHandler}
-          />
-          <label htmlFor={`toggle-${id}`}>
-            <span className="title">{text}</span>
-            <Timer initialTime={time} />
-            <span className="description">created {formatDistanceToNow(created)} ago</span>
-          </label>
-          <button className="icon icon-edit" onClick={this.editButtonClickHandler}></button>
-          <button className="icon icon-destroy" onClick={() => this.props.onDelete(id)}></button>
-        </div>
+  return (
+    <li className={`${completedClassName} ${editingClassName}`}>
+      <div className="view">
         <input
-          type="text"
-          className="edit"
-          onKeyDown={this.inputEnterPressHandler}
-          value={this.state.text}
-          onChange={this.taskTextChangeHandler}
+          className="toggle"
+          id={`toggle-${id}`}
+          type="checkbox"
+          defaultChecked={isCompleted}
+          onChange={taskStatusChangeHandler}
         />
-      </li>
-    );
-  }
+        <label htmlFor={`toggle-${id}`}>
+          <span className="title">{text}</span>
+          <Timer initialTime={time} />
+          <span className="description">created {formatDistanceToNow(created)} ago</span>
+        </label>
+        <button className="icon icon-edit" onClick={editButtonClickHandler}></button>
+        <button className="icon icon-destroy" onClick={() => onDelete(id)}></button>
+      </div>
+      <input
+        type="text"
+        className="edit"
+        onKeyDown={inputEnterPressHandler}
+        value={text}
+        onChange={taskTextChangeHandler}
+      />
+    </li>
+  );
 }
 
 export default Task;

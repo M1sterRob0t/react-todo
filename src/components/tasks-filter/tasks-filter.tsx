@@ -1,4 +1,4 @@
-import { Component, MouseEvent } from 'react';
+import { MouseEvent, useState } from 'react';
 
 import { Filter } from '../../constants';
 
@@ -7,52 +7,47 @@ interface ITaskFilterProps {
   onFilterChange: (filterName: Filter) => void;
 }
 
-class TasksFilter extends Component<ITaskFilterProps> {
-  constructor(props: ITaskFilterProps) {
-    super(props);
-    this.filterChangeHandler = this.filterChangeHandler.bind(this);
-  }
+function TasksFilter({ filter, onFilterChange }: ITaskFilterProps) {
+  const [currentFilter, setFilter] = useState(filter);
 
-  filterChangeHandler(evt: MouseEvent<HTMLButtonElement>) {
+  function filterChangeHandler(evt: MouseEvent<HTMLButtonElement>) {
     const filterName = evt.currentTarget.dataset.filter as Filter;
-    if (filterName === this.props.filter) return;
-    this.setState(() => ({ filter: filterName }));
-    this.props.onFilterChange(filterName);
+    if (filterName === currentFilter) return;
+    setFilter(filterName);
+    onFilterChange(filterName);
   }
 
-  render() {
-    return (
-      <ul className="filters">
-        <li>
-          <button
-            className={this.props.filter === Filter.All ? 'selected' : ''}
-            data-filter={Filter.All}
-            onClick={this.filterChangeHandler}
-          >
-            All
-          </button>
-        </li>
-        <li>
-          <button
-            className={this.props.filter === Filter.Active ? 'selected' : ''}
-            data-filter={Filter.Active}
-            onClick={this.filterChangeHandler}
-          >
-            Active
-          </button>
-        </li>
-        <li>
-          <button
-            className={this.props.filter === Filter.Completed ? 'selected' : ''}
-            data-filter={Filter.Completed}
-            onClick={this.filterChangeHandler}
-          >
-            Completed
-          </button>
-        </li>
-      </ul>
-    );
-  }
+  return (
+    <ul className="filters">
+      <li>
+        <button
+          className={currentFilter === Filter.All ? 'selected' : ''}
+          data-filter={Filter.All}
+          onClick={filterChangeHandler}
+        >
+          All
+        </button>
+      </li>
+      <li>
+        <button
+          className={currentFilter === Filter.Active ? 'selected' : ''}
+          data-filter={Filter.Active}
+          onClick={filterChangeHandler}
+        >
+          Active
+        </button>
+      </li>
+      <li>
+        <button
+          className={currentFilter === Filter.Completed ? 'selected' : ''}
+          data-filter={Filter.Completed}
+          onClick={filterChangeHandler}
+        >
+          Completed
+        </button>
+      </li>
+    </ul>
+  );
 }
 
 export default TasksFilter;
